@@ -6,7 +6,7 @@ Initial Flutter project submission for Week 1. This snapshot captures the projec
 Features Completed
 - Basic project setup
 - Initial app structure
-- [Add your completed features here]
+
 
 Changes from Previous Week
 - N/A
