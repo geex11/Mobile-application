@@ -16,5 +16,5 @@ Notes
 - Subsequent weeks will build upon this foundation
 
 Directory Contents
-- `Source-Code/` - Complete Flutter project as submitted
-- `Screenshots/` - Place your week's deliverables and evidence screenshots here
+Source-Code
+Screenshots
