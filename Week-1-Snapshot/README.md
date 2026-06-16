@@ -6,15 +6,15 @@ Initial Flutter project submission for Week 1. This snapshot captures the projec
 Features Completed
 - Basic project setup
 - Initial app structure
-- [Add your completed features here]
+
 
 Changes from Previous Week
-- N/A (First submission)
+- N/A
 
 Notes
 - This is the baseline submission for Week 1
 - Subsequent weeks will build upon this foundation
 
 Directory Contents
-- `Source-Code/` - Complete Flutter project as submitted
-- `Screenshots/` - Place your week's deliverables and evidence screenshots here
+Source-Code
+Screenshots
