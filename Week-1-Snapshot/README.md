@@ -9,7 +9,7 @@ Features Completed
 - [Add your completed features here]
 
 Changes from Previous Week
-- N/A (First submission)
+- N/A
 
 Notes
 - This is the baseline submission for Week 1
