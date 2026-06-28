@@ -1,7 +1,16 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
-  // Save student record
+  // SHA-256 password hashing
+  static String hashPassword(String password) {
+    final bytes = utf8.encode(password);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  // Save student record — password stored as SHA-256 hash
   static Future<void> saveStudent({
     required String name,
     required String email,
@@ -12,7 +21,8 @@ class LocalStorage {
     await prefs.setString('student_name', name);
     await prefs.setString('student_email', email);
     await prefs.setString('student_reg', regNumber);
-    await prefs.setString('student_password', password);
+    await prefs.setString('student_password', hashPassword(password));
+    await prefs.setBool('password_hashed', true);
   }
 
   // Get saved student
@@ -32,16 +42,33 @@ class LocalStorage {
     return prefs.getString('student_email') != null;
   }
 
-  // Login check — also saves session
+  // Login — compares SHA-256 hashes (auto-migrates plaintext passwords)
   static Future<bool> login(String email, String password) async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('student_email');
     final savedPassword = prefs.getString('student_password');
-    if (savedEmail == email && savedPassword == password) {
-      await prefs.setBool('is_logged_in', true); // ← save session
-      return true;
+    final isHashed = prefs.getBool('password_hashed') ?? false;
+
+    if (savedEmail != email) return false;
+
+    final inputHash = hashPassword(password);
+
+    if (isHashed) {
+      if (savedPassword == inputHash) {
+        await prefs.setBool('is_logged_in', true);
+        return true;
+      }
+      return false;
+    } else {
+      // Migrate plaintext password to hash on successful login
+      if (savedPassword == password) {
+        await prefs.setString('student_password', inputHash);
+        await prefs.setBool('password_hashed', true);
+        await prefs.setBool('is_logged_in', true);
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 
   // Check if session is active
@@ -53,7 +80,7 @@ class LocalStorage {
   // Logout — only clears session, keeps student data
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_logged_in', false); // ← only clears session
+    await prefs.setBool('is_logged_in', false);
   }
 
   // Clear all data
@@ -84,19 +111,23 @@ class LocalStorage {
     return prefs.getString('profile_image');
   }
 
-  // Password management
+  // Change password — compares hashes, stores new hash
   static Future<bool> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString('student_password');
-    
-    if (saved != currentPassword) {
-      return false;
-    }
-    
-    await prefs.setString('student_password', newPassword);
+    final isHashed = prefs.getBool('password_hashed') ?? false;
+
+    final matches = isHashed
+        ? saved == hashPassword(currentPassword)
+        : saved == currentPassword;
+
+    if (!matches) return false;
+
+    await prefs.setString('student_password', hashPassword(newPassword));
+    await prefs.setBool('password_hashed', true);
     return true;
   }
 
@@ -106,12 +137,9 @@ class LocalStorage {
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('student_email');
-    
-    if (savedEmail != email) {
-      return false;
-    }
-    
-    await prefs.setString('student_password', newPassword);
+    if (savedEmail != email) return false;
+    await prefs.setString('student_password', hashPassword(newPassword));
+    await prefs.setBool('password_hashed', true);
     return true;
   }
 }

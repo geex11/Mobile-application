@@ -22,6 +22,7 @@ class _ReportsPageState extends State<ReportsPage> {
   int _timetableCount = 0;
   List<Note> _recentNotes = [];
   Map<String, int> _timetableByDay = {};
+  Map<String, int> _attendanceSummary = {};
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ReportsPageState extends State<ReportsPage> {
     final timetableCount = await DatabaseHelper.getTimetableCount();
     final recentNotes = await DatabaseHelper.getRecentNotes(3);
     final byDay = await DatabaseHelper.getTimetableCountByDay();
+    final attendanceSummary = await DatabaseHelper.getAttendanceSummary();
 
     if (!mounted) return;
     setState(() {
@@ -46,6 +48,7 @@ class _ReportsPageState extends State<ReportsPage> {
       _timetableCount = timetableCount;
       _recentNotes = recentNotes;
       _timetableByDay = byDay;
+      _attendanceSummary = attendanceSummary;
       _isLoading = false;
     });
   }
@@ -118,6 +121,15 @@ class _ReportsPageState extends State<ReportsPage> {
                             color: const Color(0xFF0D47A1),
                           ),
                         ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _statCard(
+                            icon: Icons.how_to_reg,
+                            label: 'Attendance',
+                            value: '${(_attendanceSummary['Present'] ?? 0) + (_attendanceSummary['Absent'] ?? 0) + (_attendanceSummary['Late'] ?? 0)}',
+                            color: const Color(0xFF1976D2),
+                          ),
+                        ),
                       ],
                     ),
 
@@ -154,6 +166,21 @@ class _ReportsPageState extends State<ReportsPage> {
                               ],
                             ),
                           ),
+
+                    const SizedBox(height: 24),
+                    _sectionHeader(Icons.how_to_reg, 'Attendance Summary'),
+                    const SizedBox(height: 10),
+                    _card(
+                      child: Column(
+                        children: [
+                          _attendanceRow('Present', _attendanceSummary['Present'] ?? 0, Colors.green),
+                          const Divider(height: 16),
+                          _attendanceRow('Late', _attendanceSummary['Late'] ?? 0, Colors.orange),
+                          const Divider(height: 16),
+                          _attendanceRow('Absent', _attendanceSummary['Absent'] ?? 0, Colors.red),
+                        ],
+                      ),
+                    ),
 
                     const SizedBox(height: 24),
                     _sectionHeader(Icons.integration_instructions, 'System Info'),
@@ -320,6 +347,42 @@ class _ReportsPageState extends State<ReportsPage> {
                       fontSize: 10,
                       color: Colors.blueGrey)),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _attendanceRow(String status, int count, Color color) {
+    return Row(
+      children: [
+        Icon(
+          status == 'Present'
+              ? Icons.check_circle
+              : status == 'Absent'
+                  ? Icons.cancel
+                  : Icons.access_time,
+          size: 18,
+          color: color,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(status,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF102A43))),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            '$count session${count == 1 ? '' : 's'}',
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.bold, color: color),
           ),
         ),
       ],

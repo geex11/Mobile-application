@@ -11,6 +11,7 @@ import 'notes_page.dart';
 import 'timetable_page.dart';
 import 'news_feed_page.dart';
 import 'reports_page.dart';
+import 'attendance_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -224,6 +225,22 @@ class _DashboardPageState extends State<DashboardPage> {
                         MaterialPageRoute(builder: (_) => const ReportsPage())),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildQuickAction(
+                    icon: Icons.how_to_reg,
+                    label: 'Attendance',
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(
+                            builder: (_) => const AttendancePage())),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(child: SizedBox()),
               ],
             ),
             const SizedBox(height: 24),

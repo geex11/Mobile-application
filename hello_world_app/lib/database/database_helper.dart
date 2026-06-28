@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/note.dart';
 import '../models/timetable_entry.dart';
+import '../models/attendance.dart';
 
 class DatabaseHelper {
   static Database? _db;
@@ -16,9 +17,11 @@ class DatabaseHelper {
     final path = join(dbPath, 'smartz.db');
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createTables,
-      onUpgrade: (db, oldVersion, newVersion) => _createTables(db, newVersion),
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await _createTables(db, newVersion);
+      },
     );
   }
 
@@ -41,6 +44,16 @@ class DatabaseHelper {
         endTime TEXT NOT NULL,
         room TEXT NOT NULL,
         lecturer TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS attendance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        studentName TEXT NOT NULL,
+        regNumber TEXT NOT NULL,
+        unitName TEXT NOT NULL,
+        date TEXT NOT NULL,
+        status TEXT NOT NULL
       )
     ''');
   }
@@ -116,6 +129,49 @@ class DatabaseHelper {
   static Future<int> deleteTimetableEntry(int id) async {
     final db = await database;
     return db.delete('timetable', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // ── ATTENDANCE ─────────────────────────────────────────────────────────────
+
+  static Future<int> insertAttendance(Attendance record) async {
+    final db = await database;
+    return db.insert('attendance', record.toMap());
+  }
+
+  static Future<List<Attendance>> getAllAttendance() async {
+    final db = await database;
+    final maps = await db.query('attendance', orderBy: 'date DESC, id DESC');
+    return maps.map((m) => Attendance.fromMap(m)).toList();
+  }
+
+  static Future<List<Attendance>> searchAttendance(String query) async {
+    final db = await database;
+    final maps = await db.query(
+      'attendance',
+      where: 'unitName LIKE ? OR date LIKE ? OR status LIKE ?',
+      whereArgs: ['%$query%', '%$query%', '%$query%'],
+      orderBy: 'date DESC',
+    );
+    return maps.map((m) => Attendance.fromMap(m)).toList();
+  }
+
+  static Future<int> deleteAttendance(int id) async {
+    final db = await database;
+    return db.delete('attendance', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<Map<String, int>> getAttendanceSummary() async {
+    final db = await database;
+    final result = await db.rawQuery('''
+      SELECT status, COUNT(*) as count FROM attendance GROUP BY status
+    ''');
+    return {for (final r in result) r['status'] as String: (r['count'] as int?) ?? 0};
+  }
+
+  static Future<int> getAttendanceCount() async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM attendance');
+    return (result.first['count'] as int?) ?? 0;
   }
 
   // ── REPORTS ────────────────────────────────────────────────────────────────
