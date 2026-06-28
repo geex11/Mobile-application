@@ -1,19 +1,16 @@
-# Technical Report — Smartz Student Portal App
-## BIT4107 Mobile Application Development — CAT 1
+Technical Report — Smartz Student Portal App
+BIT4107 Mobile Application Development — CAT 1
 
-**Student:** [Your Name]
-**Registration Number:** [Your Reg Number]
-**Date:** June 2026
+Student: Makwae Ethan Hope
+Registration Number: BIT/2023/72445
 
----
 
-## 1. Introduction
+1. Introduction
 
 The Smartz Student Portal is a Flutter mobile application built over six weeks as part of the BIT4107 Mobile Application Development course. The app allows a university student to manage their profile, notes, class timetable, view campus news from a live API, and generate a summary report of their data.
 
----
 
-## 2. Application Overview
+2. Application Overview
 
 | Item | Detail |
 |---|---|
@@ -24,30 +21,29 @@ The Smartz Student Portal is a Flutter mobile application built over six weeks a
 | Database | SQLite (via sqflite) + SharedPreferences |
 | API | DEV.to Public REST API |
 
----
 
-## 3. Features Implemented
+3. Features Implemented
 
-### 3.1 User Interface (Week 1 & 3)
+3.1 User Interface (Week 1 & 3)
 - Material Design with a consistent blue colour scheme (`#1565C0`)
 - Splash screen that auto-routes based on login state
 - Welcome screen with Login and Register options
 - Responsive layouts using `Column`, `Row`, `Expanded`, `SingleChildScrollView`
 - Dark mode toggle in Settings
 
-### 3.2 Navigation Between Screens (Week 3)
-- `Navigator.push` for forward navigation
-- `Navigator.pushReplacement` for login/logout routing
-- Named screens: Welcome → Login/Register → Dashboard → Profile, Notes, Timetable, News Feed, Reports, Settings
+3.2 Navigation Between Screens (Week 3)
+Navigator.push for forward navigation
+Navigator.pushReplacement for login/logout routing
+Named screens: Welcome → Login/Register → Dashboard → Profile, Notes, Timetable, News Feed, Reports, Settings
 
-### 3.3 Event Handling (Week 2 & 3)
+3.3 Event Handling (Week 2 & 3)
 - Form validation on all input screens (login, register, add note, add class)
 - Button tap handlers for CRUD operations
 - Search bars with real-time `TextEditingController` listeners
 - Time pickers (`showTimePicker`) for timetable class scheduling
 - Pull-to-refresh and AppBar refresh button on News Feed and Reports
 
-### 3.4 Local Data Storage — SharedPreferences (Week 2)
+3.4 Local Data Storage — SharedPreferences (Week 2)
 Used for:
 - Student registration data (name, email, reg number, password)
 - Session management (login / logout)
@@ -55,14 +51,14 @@ Used for:
 - Profile image path
 
 Key methods in `LocalStorage`:
-- `saveStudent()`, `getStudent()` — persist registration
-- `login()`, `isLoggedIn()`, `logout()` — session control
-- `saveTheme()`, `isDarkMode()` — theme preference
+saveStudent()`, `getStudent()` — persist registration
+login()`, `isLoggedIn()`, `logout()` — session control
+saveTheme()`, `isDarkMode()` — theme preference
 
-### 3.5 Local Database — SQLite (Week 4)
+3.5 Local Database — SQLite (Week 4)
 Two tables in `smartz.db`:
 
-**notes table**
+notes table
 | Column | Type |
 |---|---|
 | id | INTEGER PRIMARY KEY AUTOINCREMENT |
@@ -70,7 +66,7 @@ Two tables in `smartz.db`:
 | content | TEXT |
 | createdAt | TEXT |
 
-**timetable table**
+timetable table
 | Column | Type |
 |---|---|
 | id | INTEGER PRIMARY KEY AUTOINCREMENT |
@@ -84,20 +80,20 @@ Two tables in `smartz.db`:
 
 Full CRUD operations implemented for both tables. Search across all relevant fields. Timetable entries ordered by day (Mon–Fri) then start time.
 
-### 3.6 Data Retrieval (Week 4)
-- Notes: `getAllNotes()`, `searchNotes()`, `getRecentNotes()`
-- Timetable: `getAllTimetableEntries()`, `searchTimetable()`, `getTimetableCountByDay()`
-- Count queries: `getNotesCount()`, `getTimetableCount()`
-- SharedPreferences reads on every Dashboard load for student name and reg number
+3.6 Data Retrieval (Week 4)
+Notes: `getAllNotes()`, `searchNotes()`, `getRecentNotes()`
+Timetable: `getAllTimetableEntries()`, `searchTimetable()`, `getTimetableCountByDay()`
+Count queries: `getNotesCount()`, `getTimetableCount()`
+SharedPreferences reads on every Dashboard load for student name and reg number
 
-### 3.7 Networking / API Integration (Week 5)
-- **API:** DEV.to Public REST API
-- **Endpoint:** `https://dev.to/api/articles?per_page=30&tag=mobile`
-- **Method:** HTTP GET
-- **Package:** `http: ^1.2.1`
-- **Response format:** JSON array of article objects
-- **Parsing:** `jsonDecode()` → mapped into `Post` model using `Post.fromJson()`
-- **Timeout:** 10 seconds
+3.7 Networking / API Integration (Week 5)
+API: DEV.to Public REST API
+Endpoint: `https://dev.to/api/articles?per_page=30&tag=mobile`
+Method: HTTP GET
+Package: `http: ^1.2.1`
+Response format: JSON array of article objects
+Parsing:`jsonDecode()` → mapped into `Post` model using `Post.fromJson()`
+Timeout: 10 seconds
 
 Defensive null handling in `Post.fromJson()`:
 ```dart
@@ -109,7 +105,7 @@ tags: (json['tag_list'] as List<dynamic>?)
         .toList() ?? [],
 ```
 
-### 3.8 Error Handling (Week 5)
+3.8 Error Handling (Week 5)
 Four network error types handled:
 
 | Error | Cause | User Message |
@@ -121,18 +117,17 @@ Four network error types handled:
 
 All error states show a Retry button. Loading spinner shown during fetch.
 
-### 3.9 Reports Screen (Week 6)
+3.9 Reports Screen (Week 6)
 A summary screen that reads from all data sources:
 - Student profile (SharedPreferences)
 - Notes count and 3 most recent notes (SQLite)
 - Total class count and breakdown by day (SQLite)
 - System info: storage methods, API endpoint, error handling types
 
----
 
-## 4. Project Structure
+4. Project Structure
 
-```
+
 lib/
 ├── main.dart                        App entry, dark mode, SplashDecider
 ├── models/
@@ -163,11 +158,10 @@ lib/
     ├── results_page.dart
     ├── settings_page.dart
     └── notifications_page.dart
-```
 
----
 
-## 5. Packages Used
+
+5. Packages Used
 
 | Package | Version | Purpose |
 |---|---|---|
@@ -177,9 +171,8 @@ lib/
 | `http` | ^1.2.1 | HTTP networking |
 | `image_picker` | ^1.0.7 | Profile photo selection |
 
----
 
-## 6. Weekly Progression
+6. Weekly Progression
 
 | Week | Topic | What Was Built |
 |---|---|---|
@@ -190,22 +183,20 @@ lib/
 | 5 | Networking | DEV.to API integration, JSON parsing, error handling |
 | 6 | CAT 1 | Reports screen combining all data sources, technical report |
 
----
 
-## 7. How the Application Works
+7. How the Application Works
 
-1. **First launch:** App shows Welcome screen with Login and Register buttons.
-2. **Registration:** Student enters name, email, reg number and password — saved to SharedPreferences.
-3. **Login:** Credentials verified against SharedPreferences. Session flag set on success.
-4. **Dashboard:** Loads student name and reg number. Shows 8 quick action cards.
-5. **My Notes:** Lists all notes from SQLite. FAB opens add form. Long-press or menu allows edit/delete.
-6. **My Timetable:** Lists classes grouped by day with colour coding. FAB to add. Search by unit/day/lecturer.
-7. **Campus News Feed:** Fetches 30 live articles from DEV.to API. Search filters in real-time. Error state shows Retry.
-8. **Reports:** Reads from all sources — displays student profile, note count, recent notes, classes per day, and system info.
-9. **Settings:** Change password, toggle dark mode, pick profile image, logout.
+1. First launch: App shows Welcome screen with Login and Register buttons.
+2. Registration: Student enters name, email, reg number and password — saved to SharedPreferences.
+3. Login: Credentials verified against SharedPreferences. Session flag set on success.
+4. Dashboard: Loads student name and reg number. Shows 8 quick action cards.
+5. My Notes: Lists all notes from SQLite. FAB opens add form. Long-press or menu allows edit/delete.
+6. My Timetable: Lists classes grouped by day with colour coding. FAB to add. Search by unit/day/lecturer.
+7. Campus News Feed: Fetches 30 live articles from DEV.to API. Search filters in real-time. Error state shows Retry.
+8. Reports: Reads from all sources — displays student profile, note count, recent notes, classes per day, and system info.
+9. Settings: Change password, toggle dark mode, pick profile image, logout.
 
----
 
-## 8. Conclusion
+8. Conclusion
 
 The Smartz Student Portal demonstrates all core mobile development concepts covered in this course: UI design, multi-screen navigation, event handling, local storage with both SharedPreferences and SQLite, live API networking with proper error handling, and data aggregation in a reports screen. The application is functional, handles edge cases, and follows Flutter best practices throughout.

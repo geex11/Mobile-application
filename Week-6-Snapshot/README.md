@@ -5,19 +5,20 @@ This week combines all skills learned across the semester into a complete, worki
 
 What Was Added This Week
 
-1. Reports Screen (reports_page.dart)
-   - Student profile section (reads from SharedPreferences)
-   - Summary statistics: total notes count, total timetable classes
-   - Recent notes list (latest 3 from SQLite)
-   - Timetable breakdown by day (Mon–Fri with class count per day)
-   - System info section: storage types, API endpoint, error handling methods
-   - Pull-to-refresh support
+1. Reports Screen (reports\_page.dart)
 
-2. Database additions (database_helper.dart)
-   - getNotesCount() — SQL COUNT query on notes table
-   - getTimetableCount() — SQL COUNT query on timetable table
-   - getRecentNotes(limit) — fetches N most recent notes
-   - getTimetableCountByDay() — GROUP BY day query returning Map<String, int>
+   * Student profile section (reads from SharedPreferences)
+   * Summary statistics: total notes count, total timetable classes
+   * Recent notes list (latest 3 from SQLite)
+   * Timetable breakdown by day (Mon–Fri with class count per day)
+   * System info section: storage types, API endpoint, error handling methods
+   * Pull-to-refresh support
+2. Database additions (database\_helper.dart)
+
+   * getNotesCount() — SQL COUNT query on notes table
+   * getTimetableCount() — SQL COUNT query on timetable table
+   * getRecentNotes(limit) — fetches N most recent notes
+   * getTimetableCountByDay() — GROUP BY day query returning Map<String, int>
 
 Assessment Checklist
 
@@ -34,23 +35,24 @@ Reports screen                    Done
 
 Application Screens
 
-- Welcome screen
-- Login screen
-- Registration screen
-- Dashboard (8 quick action cards)
-- My Profile
-- My Notes (SQLite CRUD + search)
-- My Timetable (SQLite CRUD + search, grouped by day)
-- Campus News Feed (DEV.to API, live articles)
-- Reports (aggregated summary from all sources)
-- Settings (dark mode, password, profile image, logout)
-- Courses, Assignments, Results, Notifications
+* Welcome screen
+* Login screen
+* Registration screen
+* Dashboard (8 quick action cards)
+* My Profile
+* My Notes (SQLite CRUD + search)
+* My Timetable (SQLite CRUD + search, grouped by day)
+* Campus News Feed (DEV.to API, live articles)
+* Reports (aggregated summary from all sources)
+* Settings (dark mode, password, profile image, logout)
+* Courses, Assignments, Results, Notifications
 
 Files Submitted
 
-- Source-Code/   Full Flutter project source
-- Screenshots/   App screenshots
-- Technical-Report.md  Full technical report
+* Source-Code/   Full Flutter project source
+* Screenshots/   App screenshots
+* Technical-Report.md  Full technical report
 
-Date Submitted
+
 Week 6 — June 2026
+
